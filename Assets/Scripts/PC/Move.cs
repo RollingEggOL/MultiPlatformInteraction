@@ -23,10 +23,6 @@ public class Move : MonoBehaviour {
         _mainCamera = Camera.main.transform;
         _CursorMeshRender = Cursor.GetComponentInChildren<MeshRenderer>();
         
-#if UNITY_EDITOR
-        _lineRender = GetComponent<LineRenderer>();
-        _lineRender.numPositions = 2;
-#endif
 	}
 	
 	// Update is called once per frame
@@ -85,10 +81,5 @@ public class Move : MonoBehaviour {
             _ProcessGameObject = null;
         }
 
-        //show the raycast for debug
-#if UNITY_EDITOR
-        _lineRender.SetPosition(0, _mainCamera.position);
-        _lineRender.SetPosition(1, _mainCamera.position + new Vector3(0, 0, 2));
-#endif
     }
 }
