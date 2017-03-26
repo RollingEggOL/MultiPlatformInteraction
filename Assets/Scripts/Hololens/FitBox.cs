@@ -50,14 +50,15 @@ public class FitBox : MonoBehaviour
                 Quaternion camQueat = Camera.main.transform.localRotation;
 
                 //to ignore the picth,we should set the rotation around x axis to zero;
-                //camQueat.x = 0;
+                camQueat.x = 0;
 
                 //we do not want the collection be too high 
                 Vector3 newPosition = camQueat * CollectionDefaultPosition;
                 newPosition.y = CollectionDefaultPosition.y;
 
                 HololensCollection.transform.position = Camera.main.transform.position + newPosition;
-
+                
+                //make the collection face the user
                 Quaternion toQuat = Camera.main.transform.localRotation * HololensCollection.transform.rotation;
                 toQuat.x = 0;
                 toQuat.z = 0;
@@ -71,21 +72,6 @@ public class FitBox : MonoBehaviour
 
     private void Update()
     {
-#if UNITY_EDITOR
-        Debug.Log("editor");
-        if (Input.GetKeyDown("q"))
-        {
-            Camera.main.transform.Rotate(new Vector3(1, 0, 0), 30);
-        }
-        if (Input.GetKeyDown("e"))
-        {
-            Camera.main.transform.Rotate(new Vector3(1, 0, 0), -30);
-        }
-        if (Input.GetKeyDown(KeyCode.KeypadEnter))
-        {
-            DismissFitBox();
-        }
-#endif
     }
 
     private void LateUpdate()
