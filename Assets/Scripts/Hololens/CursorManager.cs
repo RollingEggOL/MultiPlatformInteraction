@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Manager the Cursor State
+/// </summary>
 public class CursorManager : MonoBehaviour {
 
     [Tooltip("The cursor when it hits some gameobjects")]

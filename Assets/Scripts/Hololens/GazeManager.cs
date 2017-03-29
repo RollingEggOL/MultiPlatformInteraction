@@ -66,6 +66,7 @@ public class GazeManager : Singleton<GazeManager>
         //else the Hitposition and HitNormal will according to the camera's rotation and MaxGazeDistance 
         if (Hit)
         {
+            //minus to make sure that the cursor will always be out the model
             HitPosition = hitInfo.point-gazeDirection*0.1f;
             HitNormal = hitInfo.normal;
         }
