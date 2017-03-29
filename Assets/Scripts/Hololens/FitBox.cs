@@ -2,7 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VR.WSA.Input;
-
+/// <summary>
+/// 1.In the LateUpdate we set the fitbox's position by camera's rotation and distance we set(defalut be 2.0f);
+/// 2.We set the Tap Gesture's callback,which is Dismissfitbox
+/// 3.In Dismissbox function,we will hide fitbox and if we set "MoveCollectionOnDismiss" to be true,the model's positon
+/// will be set according it's offset position from camera at beginning,and the camera's rotation the time we tap the fitbox
+/// </summary>
 public class FitBox : MonoBehaviour
 {
     [Tooltip("The Gameobject to show after click the fitbox")]
