@@ -48,22 +48,30 @@ public class Interact : MonoBehaviour
 
     void OnSelect()
     {
-        SwitchGameobject();
+        bool _cancelSelected = _selectedGameObject == this;
+        SwitchGameobject(_cancelSelected);
+        if (_cancelSelected)
+        {
+            CancelProcess();
+        }
+        else
+        {
+            SelectProcess();
+        }
     }
 
     /// <summary>
     /// if the currenyly select gameobject has been selected,then cancel the select mode
     /// which the select object will be closer to player,and others gameobjects will be hided
     /// </summary>
-    void SwitchGameobject()
+    void SwitchGameobject(bool cancel)
     {
-        bool _cancelSelected = _selectedGameObject == this;
         for (int index = 0; index != InteractibleObject.Length; ++index)
         {
             Interact temp = InteractibleObject[index];
             if (temp != this)
             {
-                temp.gameObject.SetActive(_cancelSelected);
+                temp.gameObject.SetActive(cancel);
             }
             else
             {
@@ -72,15 +80,17 @@ public class Interact : MonoBehaviour
                 temp.transform.position +=direction*factor;
             }
         }
+    }
 
-        //Update SelectGameobject
-        if (_cancelSelected)
-        {
-            _selectedGameObject = null;
-        }
-        else
-        {
-            _selectedGameObject = this;
-        }
+    private void SelectProcess()
+    {
+        _selectedGameObject = this;
+        //GestureManager.Instance.SwitchRecognizer(GestureManager.Instance.NavigationRecognizer);
+    }
+
+    private void CancelProcess()
+    {
+        _selectedGameObject = null;
+        //GestureManager.Instance.SwitchRecognizer(GestureManager.Instance.SelectRecognizer);
     }
 }
