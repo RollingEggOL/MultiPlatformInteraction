@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum frustumDirection
+{
+    frustumLeft,
+    frustumRight,
+    frustumBottom,
+    frustumTop
+}
 public class Tagalong : MonoBehaviour
 {
-    private enum frustumDirection
-    {
-        frustumLeft,
-        frustumRight,
-        frustumBottom,
-        frustumTop
-    }
-
     [Tooltip("The distance in meters from the camera for the Tagalong to seek when updating its position")]
     public float TagalongDistance = 2.0f;
 
     private BoxCollider taralongCollider;
+    private Interpolator interpolatpor;
+
     private Plane[] frustumPlanes;
     private ComRef<Transform> cameraTransform;
 
@@ -33,6 +34,12 @@ public class Tagalong : MonoBehaviour
             return Camera.main.transform;
         });
 
+        interpolatpor = gameObject.AddComponent<Interpolator>();
+        interpolatpor.SmoothLerpToTarget = true;
+        interpolatpor.SmoothPositionLerpRatio = 0.75f;
+        interpolatpor.PositionPerSecond = 3.0f;
+
+        gameObject.AddComponent<Billboard>();
     }
 
 
@@ -43,7 +50,8 @@ public class Tagalong : MonoBehaviour
         Vector3 tagalongTargetPosition;
         if (CalculateTagalongTargetPosition(transform.position, out tagalongTargetPosition))
         {
-            transform.position = tagalongTargetPosition;
+            //transform.position = tagalongTargetPosition;
+            interpolatpor.SetTargetPosition(tagalongTargetPosition);
         }
     }
 
