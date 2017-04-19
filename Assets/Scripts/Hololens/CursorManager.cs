@@ -12,13 +12,28 @@ public class CursorManager : MonoBehaviour {
     [Tooltip("The cursor when it doesn't hit any gameobjects ")]
     public GameObject CursorOff;
 
+    [Tooltip("The cursor when hololens can see user's hand")]
+    public GameObject prefab_HandDetectedCursor;
+    private GameObject handDetectedCursor;
+
+    [Tooltip("The cursor when scrolling sth(navigating)")]
+    public GameObject prefab_ScrollDetectedCursor;
+    private GameObject scrollDetectedCursor;
+
+
+    [Tooltip("The hand or scroll cursor's parent in case to make them face the user")]
+    public GameObject Billboard;
+
 	void Start ()
     {
-        if (CursorOn == null || CursorOff == null)
+        if (CursorOn == null || CursorOff == null || prefab_HandDetectedCursor==null)
         {
             Debug.LogError("THE CURSOR IS NOT SET");
             return;
         }
+
+        handDetectedCursor = InstantiatePrefab(prefab_HandDetectedCursor);
+        scrollDetectedCursor = InstantiatePrefab(prefab_ScrollDetectedCursor);
 
         //hide the cursor at beginning
         CursorOn.SetActive(false);
@@ -27,7 +42,33 @@ public class CursorManager : MonoBehaviour {
 
     private void Update()
     {
-        if (GazeManager.Instance == null || CursorOn == null || CursorOff == null)
+        if (GazeManager.Instance == null)
+        {
+            return;
+        }
+        UpdateGeneralCursorState();
+        UpdateHandCursorState();
+        UpdateScrollCursorState();
+    }
+
+    private GameObject InstantiatePrefab(GameObject inputPrefab)
+    {
+        if (inputPrefab == null || Billboard==null)
+        {
+            return null;
+        }
+        GameObject spawn = null;
+        spawn = Instantiate(inputPrefab);
+        spawn.transform.parent = Billboard.transform;
+        spawn.transform.localPosition = Vector3.zero;
+        spawn.SetActive(false);
+
+        return spawn;
+    }
+
+    private void UpdateGeneralCursorState()
+    {
+        if (CursorOn == null || CursorOff == null)
         {
             return;
         }
@@ -44,5 +85,24 @@ public class CursorManager : MonoBehaviour {
 
         transform.position = GazeManager.Instance.HitPosition;
         transform.up = GazeManager.Instance.HitNormal;
+    }
+
+    private void UpdateHandCursorState()
+    {
+        if (handDetectedCursor == null)
+        {
+            return;
+        }
+        handDetectedCursor.SetActive(HandsManager.Instance.HandDetected);
+    }
+
+    private void UpdateScrollCursorState()
+    {
+        if (scrollDetectedCursor == null)
+        {
+            return;
+        }
+
+        scrollDetectedCursor.SetActive(GestureManager.Instance.IsNavigation);
     }
 }
