@@ -7,13 +7,15 @@ using UnityEngine;
 /// </summary>
 public class Interact : MonoBehaviour
 {
-    private Material[] defaultMaterials;
+    public Material[] defaultMaterials;
 
+    //make static in case to keep only init once
     private static Interact[] InteractibleObject;
+    private static ComRef<GameObject> _Panel;
 
+    //
     private static Interact _selectedGameObject;
 
-    private static ComRef<GameObject> _Panel;
 
     public void InitPanel()
     {
@@ -60,6 +62,10 @@ public class Interact : MonoBehaviour
 
     void GazeEnter()
     {
+        if (defaultMaterials == null)
+        {
+            return;
+        }
         for (int i = 0; i != defaultMaterials.Length; ++i)
         {
             defaultMaterials[i].SetFloat("_Highlight", 0.25f);
@@ -68,6 +74,10 @@ public class Interact : MonoBehaviour
 
     void GazeExit()
     {
+        if (defaultMaterials == null)
+        {
+            return;
+        }
         for (int i = 0; i != defaultMaterials.Length; ++i)
         {
             defaultMaterials[i].SetFloat("_Highlight", 0f);
@@ -76,7 +86,11 @@ public class Interact : MonoBehaviour
 
     void OnSelect()
     {
-        bool _cancelSelected = _selectedGameObject == this;
+        //Update the materials which need to be handled,and set the slider according to the materials
+        UIManager.Instance._HandledMaterials = defaultMaterials;
+        UIManager.Instance.InitSliderValue();
+
+        bool _cancelSelected = _selectedGameObject == this;      
         SwitchGameobject(_cancelSelected);
         if (_cancelSelected)
         {
@@ -114,6 +128,7 @@ public class Interact : MonoBehaviour
     {
         _selectedGameObject = this;
         _Panel.Ref.SetActive(true);
+        //the GUI of Panel actually don't need switch recognizer,so this can use for rotation
         GestureManager.Instance.SwitchRecognizer(GestureManager.Instance.NavigationRecognizer);
     }
 

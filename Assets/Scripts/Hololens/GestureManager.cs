@@ -118,25 +118,20 @@ public class GestureManager : Singleton<GestureManager>
 
     private void NavigationRecognizer_Start(InteractionSourceKind source, Vector3 RelativePosition, Ray headRay)
     {
-        Debug.Log("Start Navigation");
         IsNavigation = true;
         NavigationRelativePosition = RelativePosition;
     }
     private void NavigationRecognizer_Update(InteractionSourceKind source, Vector3 RelativePosition, Ray headRay)
     {
-        Debug.Log("Update Navigation");
         IsNavigation = true;
         NavigationRelativePosition = RelativePosition;
-        Debug.Log("Relactive position is " + NavigationRelativePosition);
     }
     private void NavigationRecognizer_Completed(InteractionSourceKind source, Vector3 RelativePosition, Ray headRay)
     {
-        Debug.Log("Completed Navigation");
         IsNavigation = false;
     }
     private void NavigationRecognizer_Canceled(InteractionSourceKind source, Vector3 RelativePosition, Ray headRay)
     {
-        Debug.Log("Cancel Navigation");
         IsNavigation = false;
     }
 }
