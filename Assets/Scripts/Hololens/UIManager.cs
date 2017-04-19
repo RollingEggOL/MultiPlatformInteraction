@@ -19,6 +19,8 @@ public class UIManager : Singleton<UIManager>
     private Slider slider_Red;
     private Slider slider_Blue;
     private Slider slider_Green;
+    private Toggle toggle_Tagalong;
+    private Tagalong _tagalong;
 
 
     [HideInInspector]
@@ -26,9 +28,12 @@ public class UIManager : Singleton<UIManager>
 
     private void Start()
     {
+        _tagalong = transform.Find("Panel").GetComponent<Tagalong>();
+
         slider_Red = transform.Find("Panel/Red").GetComponent<Slider>();
         slider_Blue = transform.Find("Panel/Blue").GetComponent<Slider>();
         slider_Green = transform.Find("Panel/Green").GetComponent<Slider>();
+        toggle_Tagalong = transform.Find("Panel/Tagalong").GetComponent<Toggle>();
     }
 
 
@@ -64,6 +69,18 @@ public class UIManager : Singleton<UIManager>
         }
 
         SetMaterials(SliderType._Green);
+    }
+
+    public void ToggleValueChangedListener_Tagalong()
+    {
+        if (toggle_Tagalong.isOn)
+        {
+            _tagalong.enabled = true;
+        }
+        else
+        {
+            _tagalong.enabled = false;
+        }
     }
 
 
