@@ -13,9 +13,9 @@ public class Interact : MonoBehaviour
     private static Interact[] InteractibleObject;
     private static ComRef<GameObject> _Panel;
 
-    //
     private static Interact _selectedGameObject;
 
+    private Vector3 originPositionOfSelectedObj;
 
     public void InitPanel()
     {
@@ -117,9 +117,17 @@ public class Interact : MonoBehaviour
             }
             else
             {
-                Vector3 direction = Camera.main.transform.forward;
-                float factor = _selectedGameObject == this ? 1.0f : -1.0f;
-                temp.transform.position +=direction*factor;
+                if (!cancel)
+                {
+                    Vector3 direction = Camera.main.transform.forward;
+                    originPositionOfSelectedObj = temp.transform.position;
+                    temp.transform.position -= direction;
+                }
+                else
+                {
+                    temp.transform.position = originPositionOfSelectedObj;
+                }
+
             }
         }
     }
