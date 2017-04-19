@@ -6,15 +6,6 @@ using UnityEngine.VR.WSA.Input;
 public class GestureManager : Singleton<GestureManager>
 {
     /// <summary>
-    /// To Select the Gameobject
-    /// </summary>
-    public GestureRecognizer SelectRecognizer
-    {
-        get;
-        private set;
-    }
-
-    /// <summary>
     /// Currectly actived Recognizer
     /// </summary>
     public GestureRecognizer ActiveRecognizer
@@ -51,11 +42,6 @@ public class GestureManager : Singleton<GestureManager>
 
     private void OnEnable()
     {
-        SelectRecognizer = new GestureRecognizer();
-        SelectRecognizer.SetRecognizableGestures(GestureSettings.Tap|GestureSettings.DoubleTap);
-
-        SelectRecognizer.TappedEvent += TapRecognizer_TappedEvent;
-
         NavigationRecognizer = new GestureRecognizer();
         NavigationRecognizer.SetRecognizableGestures(GestureSettings.Tap | GestureSettings.DoubleTap | GestureSettings.NavigationRailsX);
         NavigationRecognizer.NavigationStartedEvent += NavigationRecognizer_Start;
@@ -65,14 +51,12 @@ public class GestureManager : Singleton<GestureManager>
         NavigationRecognizer.TappedEvent += TapRecognizer_TappedEvent;
 
         //the default recognizer is to navigate
-        SwitchRecognizer(SelectRecognizer);
+        SwitchRecognizer(NavigationRecognizer);
     }
 
 
     private void OnDestroy()
     {
-        SelectRecognizer.TappedEvent -= TapRecognizer_TappedEvent;
-
         NavigationRecognizer.NavigationStartedEvent -= NavigationRecognizer_Start;
         NavigationRecognizer.NavigationUpdatedEvent -= NavigationRecognizer_Update;
         NavigationRecognizer.NavigationCompletedEvent -= NavigationRecognizer_Completed;

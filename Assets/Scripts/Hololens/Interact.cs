@@ -13,9 +13,10 @@ public class Interact : MonoBehaviour
     private static Interact[] InteractibleObject;
     private static ComRef<GameObject> _Panel;
 
-    private static Interact _selectedGameObject;
+    public static GameObject _selectedGameObject;
 
     private Vector3 originPositionOfSelectedObj;
+    private Quaternion originRotationOfSelectedObj;
 
     public void InitPanel()
     {
@@ -90,7 +91,7 @@ public class Interact : MonoBehaviour
         UIManager.Instance._HandledMaterials = defaultMaterials;
         UIManager.Instance.InitSliderValue();
 
-        bool _cancelSelected = _selectedGameObject == this;      
+        bool _cancelSelected = _selectedGameObject == gameObject;      
         SwitchGameobject(_cancelSelected);
         if (_cancelSelected)
         {
@@ -121,11 +122,13 @@ public class Interact : MonoBehaviour
                 {
                     Vector3 direction = Camera.main.transform.forward;
                     originPositionOfSelectedObj = temp.transform.position;
+                    originRotationOfSelectedObj = temp.transform.rotation;
                     temp.transform.position -= direction;
                 }
                 else
                 {
                     temp.transform.position = originPositionOfSelectedObj;
+                    temp.transform.rotation = originRotationOfSelectedObj;
                 }
 
             }
@@ -134,16 +137,14 @@ public class Interact : MonoBehaviour
 
     private void SelectProcess()
     {
-        _selectedGameObject = this;
+        _selectedGameObject = gameObject;
         _Panel.Ref.SetActive(true);
         //the GUI of Panel actually don't need switch recognizer,so this can use for rotation
-        GestureManager.Instance.SwitchRecognizer(GestureManager.Instance.NavigationRecognizer);
     }
 
     private void CancelProcess()
     {
         _selectedGameObject = null;
         _Panel.Ref.SetActive(false);
-        GestureManager.Instance.SwitchRecognizer(GestureManager.Instance.SelectRecognizer);
     }
 }
