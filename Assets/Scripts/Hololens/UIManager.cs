@@ -20,6 +20,8 @@ public class UIManager : Singleton<UIManager>
     private Slider slider_Blue;
     private Slider slider_Green;
 
+
+    [HideInInspector]
     public Material[] _HandledMaterials;
 
     private void Start()
