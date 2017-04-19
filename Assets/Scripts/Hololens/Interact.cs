@@ -24,7 +24,7 @@ public class Interact : MonoBehaviour
 
         _Panel = new ComRef<GameObject>(() =>
         {
-            return GameObject.Find("Panel");
+            return GameObject.Find("UI/Panel");
         });
 
         _Panel.Ref.SetActive(false);
