@@ -8,16 +8,37 @@ using UnityEngine;
 public class Interact : MonoBehaviour
 {
     private Material[] defaultMaterials;
-    private Interact[] InteractibleObject;
+
+    private static Interact[] InteractibleObject;
 
     private static Interact _selectedGameObject;
 
-    private void Start()
-    {
-        defaultMaterials = GetComponent<Renderer>().materials;
+    private static ComRef<GameObject> _Panel;
 
+    public void InitPanel()
+    {
+        if (_Panel != null)
+        {
+            return;
+        }
+
+        _Panel = new ComRef<GameObject>(() =>
+        {
+            return GameObject.Find("Panel");
+        });
+
+        _Panel.Ref.SetActive(false);
+    }
+
+    private void InitInteractibleObject()
+    {
+        if (InteractibleObject != null)
+        {
+            return;
+        }
         //Find all brother
-        Transform _parent= transform.parent;
+        Transform _parent = transform.parent;
+
         InteractibleObject = new Interact[_parent.childCount];
         for (int index = 0; index != _parent.childCount; ++index)
         {
@@ -27,7 +48,14 @@ public class Interact : MonoBehaviour
         {
             Debug.LogError("INTERACTIBLEOBJECT_INIT_FAILED");
         }
+    }
 
+    private void Start()
+    {
+        defaultMaterials = GetComponent<Renderer>().materials;
+
+        InitPanel();
+        InitInteractibleObject();
     }
 
     void GazeEnter()
@@ -85,12 +113,14 @@ public class Interact : MonoBehaviour
     private void SelectProcess()
     {
         _selectedGameObject = this;
-        //GestureManager.Instance.SwitchRecognizer(GestureManager.Instance.NavigationRecognizer);
+        _Panel.Ref.SetActive(true);
+        GestureManager.Instance.SwitchRecognizer(GestureManager.Instance.NavigationRecognizer);
     }
 
     private void CancelProcess()
     {
         _selectedGameObject = null;
-        //GestureManager.Instance.SwitchRecognizer(GestureManager.Instance.SelectRecognizer);
+        _Panel.Ref.SetActive(false);
+        GestureManager.Instance.SwitchRecognizer(GestureManager.Instance.SelectRecognizer);
     }
 }

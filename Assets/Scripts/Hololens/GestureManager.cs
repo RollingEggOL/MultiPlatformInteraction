@@ -33,7 +33,7 @@ public class GestureManager : Singleton<GestureManager>
     }
 
     /// <summary>
-    /// To Rotate the Gameobject
+    /// When sth is selected,this recongnizer will be active
     /// </summary>
     public GestureRecognizer NavigationRecognizer
     {
@@ -57,11 +57,12 @@ public class GestureManager : Singleton<GestureManager>
         SelectRecognizer.TappedEvent += TapRecognizer_TappedEvent;
 
         NavigationRecognizer = new GestureRecognizer();
-        NavigationRecognizer.SetRecognizableGestures(GestureSettings.NavigationRailsX);
+        NavigationRecognizer.SetRecognizableGestures(GestureSettings.Tap | GestureSettings.DoubleTap | GestureSettings.NavigationRailsX);
         NavigationRecognizer.NavigationStartedEvent += NavigationRecognizer_Start;
         NavigationRecognizer.NavigationUpdatedEvent += NavigationRecognizer_Update;
         NavigationRecognizer.NavigationCompletedEvent += NavigationRecognizer_Completed;
         NavigationRecognizer.NavigationCanceledEvent += NavigationRecognizer_Canceled;
+        NavigationRecognizer.TappedEvent += TapRecognizer_TappedEvent;
 
         //the default recognizer is to navigate
         SwitchRecognizer(SelectRecognizer);
@@ -76,6 +77,7 @@ public class GestureManager : Singleton<GestureManager>
         NavigationRecognizer.NavigationUpdatedEvent -= NavigationRecognizer_Update;
         NavigationRecognizer.NavigationCompletedEvent -= NavigationRecognizer_Completed;
         NavigationRecognizer.NavigationCanceledEvent -= NavigationRecognizer_Canceled;
+        NavigationRecognizer.TappedEvent -= TapRecognizer_TappedEvent;
     }
 
     /// <summary>

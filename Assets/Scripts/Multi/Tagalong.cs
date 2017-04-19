@@ -50,7 +50,6 @@ public class Tagalong : MonoBehaviour
         Vector3 tagalongTargetPosition;
         if (CalculateTagalongTargetPosition(transform.position, out tagalongTargetPosition))
         {
-            //transform.position = tagalongTargetPosition;
             interpolatpor.SetTargetPosition(tagalongTargetPosition);
         }
     }

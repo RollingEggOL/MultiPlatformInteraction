@@ -28,6 +28,8 @@ public class FitBox : MonoBehaviour
         {
             CollectionDefaultPosition = HololensCollection.transform.localPosition;
             HololensCollection.SetActive(false);
+            //To hide the panel
+            HololensCollection.GetComponentInChildren<Interact>().InitPanel();
         }
 #if UNITY_WSA_10_0
         //Set gesture listener
