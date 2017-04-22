@@ -103,6 +103,6 @@ public class CursorManager : MonoBehaviour {
             return;
         }
 
-        scrollDetectedCursor.SetActive(GestureManager.Instance.IsNavigation);
+        scrollDetectedCursor.SetActive(GestureAction.IsRotating|| MultiSlider.IsDragging);
     }
 }

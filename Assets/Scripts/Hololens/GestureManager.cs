@@ -48,7 +48,7 @@ public class GestureManager : Singleton<GestureManager>
         NavigationRecognizer.NavigationUpdatedEvent += NavigationRecognizer_Update;
         NavigationRecognizer.NavigationCompletedEvent += NavigationRecognizer_Completed;
         NavigationRecognizer.NavigationCanceledEvent += NavigationRecognizer_Canceled;
-        NavigationRecognizer.TappedEvent += TapRecognizer_TappedEvent;
+        NavigationRecognizer.TappedEvent += NavigationRecognizer_TappedEvent;
 
         //the default recognizer is to navigate
         SwitchRecognizer(NavigationRecognizer);
@@ -61,7 +61,7 @@ public class GestureManager : Singleton<GestureManager>
         NavigationRecognizer.NavigationUpdatedEvent -= NavigationRecognizer_Update;
         NavigationRecognizer.NavigationCompletedEvent -= NavigationRecognizer_Completed;
         NavigationRecognizer.NavigationCanceledEvent -= NavigationRecognizer_Canceled;
-        NavigationRecognizer.TappedEvent -= TapRecognizer_TappedEvent;
+        NavigationRecognizer.TappedEvent -= NavigationRecognizer_TappedEvent;
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ public class GestureManager : Singleton<GestureManager>
         ActiveRecognizer = newRecognizer;
     }
 
-    private void TapRecognizer_TappedEvent(InteractionSourceKind source, int tapCount, Ray headRay)
+    private void NavigationRecognizer_TappedEvent(InteractionSourceKind source, int tapCount, Ray headRay)
     {
         if (tapCount != 2)
         {
