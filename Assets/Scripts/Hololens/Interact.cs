@@ -12,8 +12,22 @@ public class Interact : MonoBehaviour
     //make static in case to keep only init once
     private static Interact[] InteractibleObject;
     private static ComRef<GameObject> _Panel;
+    private static GameObject _Parent;
 
-    public static GameObject _selectedGameObject;
+    private static GameObject _selectedGameObject;
+    public static GameObject SelectedGameObject
+    {
+        get
+        {
+            return _selectedGameObject;
+        }
+        private set
+        {
+            _selectedGameObject = value;
+            
+            DirectionIndicator.Instance.TargetGameobject = _selectedGameObject??_Parent;
+        }
+    }
 
     private Vector3 originPositionOfSelectedObj;
     private Quaternion originRotationOfSelectedObj;
@@ -57,6 +71,11 @@ public class Interact : MonoBehaviour
     {
         defaultMaterials = GetComponent<Renderer>().materials;
 
+        if (_Parent == null)
+        {
+            _Parent = transform.parent.gameObject;
+        }
+
         InitPanel();
         InitInteractibleObject();
     }
@@ -91,7 +110,7 @@ public class Interact : MonoBehaviour
         UIManager.Instance._HandledMaterials = defaultMaterials;
         UIManager.Instance.InitSliderValue();
 
-        bool _cancelSelected = _selectedGameObject == gameObject;      
+        bool _cancelSelected = SelectedGameObject == gameObject;      
         SwitchGameobject(_cancelSelected);
         if (_cancelSelected)
         {
@@ -137,14 +156,14 @@ public class Interact : MonoBehaviour
 
     private void SelectProcess()
     {
-        _selectedGameObject = gameObject;
+        SelectedGameObject = gameObject;
         _Panel.Ref.SetActive(true);
         //the GUI of Panel actually don't need switch recognizer,so this can use for rotation
     }
 
     private void CancelProcess()
     {
-        _selectedGameObject = null;
+        SelectedGameObject = null;
         _Panel.Ref.SetActive(false);
     }
 }

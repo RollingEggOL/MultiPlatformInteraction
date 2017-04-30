@@ -16,7 +16,7 @@ public class GestureAction : MonoBehaviour
 
     private void PerformRotation()
     {
-        GameObject _selected = Interact._selectedGameObject;
+        GameObject _selected = Interact.SelectedGameObject;
 
         //if we did not select anyGameobject then we will rotate the whole Brat
         //(all component in brat will enter this funciton and be rotated)

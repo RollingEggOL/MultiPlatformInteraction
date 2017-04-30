@@ -8,7 +8,7 @@ using UnityEngine.VR.WSA.Input;
 /// 3.In Dismissbox function,we will hide fitbox and if we set "MoveCollectionOnDismiss" to be true,the model's positon
 /// will be set according it's offset position from camera at beginning,and the camera's rotation the time we tap the fitbox
 /// </summary>
-public class FitBox : MonoBehaviour
+public class FitBox : Singleton<FitBox>
 {
     [Tooltip("The Gameobject to show after click the fitbox")]
     public GameObject HololensCollection;
@@ -22,7 +22,7 @@ public class FitBox : MonoBehaviour
 
     private GestureRecognizer recognizer;
 
-    private void Awake()
+    private void Start()
     {
         if (HololensCollection)
         {
