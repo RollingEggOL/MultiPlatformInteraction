@@ -49,14 +49,16 @@ public class GestureManager : Singleton<GestureManager>
         NavigationRecognizer.NavigationUpdatedEvent += NavigationRecognizer_Update;
         NavigationRecognizer.NavigationCompletedEvent += NavigationRecognizer_Completed;
         NavigationRecognizer.NavigationCanceledEvent += NavigationRecognizer_Canceled;
-        NavigationRecognizer.TappedEvent += NavigationRecognizer_TappedEvent;
+        NavigationRecognizer.TappedEvent += Recognizer_TappedEvent;
 
         ManipulationRecognizer = new GestureRecognizer();
-        ManipulationRecognizer.SetRecognizableGestures(GestureSettings.ManipulationTranslate);
+        ManipulationRecognizer.SetRecognizableGestures(GestureSettings.Tap | GestureSettings.DoubleTap | GestureSettings.ManipulationTranslate);
         ManipulationRecognizer.ManipulationStartedEvent += ManipulationRecognzer_Start;
         ManipulationRecognizer.ManipulationUpdatedEvent += ManipulationRecognzer_Update;
         ManipulationRecognizer.ManipulationCompletedEvent += ManipulationRecognzer_Completed;
         ManipulationRecognizer.ManipulationCanceledEvent += ManipulationRecognzer_Canceled;
+        ManipulationRecognizer.TappedEvent += Recognizer_TappedEvent;
+
 
         //the default recognizer is to navigate
         SwitchRecognizer(NavigationRecognizer);
@@ -69,12 +71,14 @@ public class GestureManager : Singleton<GestureManager>
         NavigationRecognizer.NavigationUpdatedEvent -= NavigationRecognizer_Update;
         NavigationRecognizer.NavigationCompletedEvent -= NavigationRecognizer_Completed;
         NavigationRecognizer.NavigationCanceledEvent -= NavigationRecognizer_Canceled;
-        NavigationRecognizer.TappedEvent -= NavigationRecognizer_TappedEvent;
+        NavigationRecognizer.TappedEvent -= Recognizer_TappedEvent;
 
         ManipulationRecognizer.ManipulationStartedEvent -= ManipulationRecognzer_Start;
         ManipulationRecognizer.ManipulationUpdatedEvent -= ManipulationRecognzer_Update;
         ManipulationRecognizer.ManipulationCompletedEvent -= ManipulationRecognzer_Completed;
         ManipulationRecognizer.ManipulationCanceledEvent -= ManipulationRecognzer_Canceled;
+        ManipulationRecognizer.TappedEvent -= Recognizer_TappedEvent;
+
     }
 
     /// <summary>
@@ -100,7 +104,7 @@ public class GestureManager : Singleton<GestureManager>
         ActiveRecognizer = newRecognizer;
     }
 
-    private void NavigationRecognizer_TappedEvent(InteractionSourceKind source, int tapCount, Ray headRay)
+    private void Recognizer_TappedEvent(InteractionSourceKind source, int tapCount, Ray headRay)
     {
         if (tapCount != 2)
         {

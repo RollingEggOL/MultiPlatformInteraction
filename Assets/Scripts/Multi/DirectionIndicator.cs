@@ -10,9 +10,6 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
     [Tooltip("Model of the direction indicator")]
     public GameObject DirectionIndicatorObject;
 
-    [HideInInspector]
-    public GameObject TargetGameobject;
-
     [Tooltip("The width of allowable space of the screen")]
     [Range(0, 0.3f)]
     public float ScreenframeWidth = 0.1f;
@@ -24,7 +21,21 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
 
     private Quaternion directionIndicatorDefaultRotation = Quaternion.identity;
 
-    private Collider targetGameObjectCollider;
+    private Collider _targetGameObjectCollider;
+    private GameObject _targetGameobject;
+    public GameObject TargetGameobject
+    {
+        get
+        {
+            return _targetGameobject;
+        }
+        set
+        {
+            _targetGameobject = value;
+            _targetGameObjectCollider = _targetGameobject.GetComponent<Collider>();
+        }
+    }
+
     private void Awake()
     {
         if (DirectionIndicatorObject == null)
@@ -36,7 +47,7 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
         DirectionIndicatorObject.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
         
         TargetGameobject = GameObject.Find("Brat");
-        targetGameObjectCollider = TargetGameobject.GetComponent<Collider>();
+        _targetGameObjectCollider = TargetGameobject.GetComponent<Collider>();
 
         cameraTransform = new ComRef<Transform>(() =>
           {
@@ -72,7 +83,6 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
             DirectionIndicatorObject.transform.position = position;
             DirectionIndicatorObject.transform.rotation = rotation;
         }
-
     }
 
     private bool IsTargetVisible
@@ -80,7 +90,7 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
         get
         {
             Plane[] CamerafrustumPlanes= GeometryUtility.CalculateFrustumPlanes(Camera.main); ;
-            bool _isVisible = GeometryUtility.TestPlanesAABB(CamerafrustumPlanes, targetGameObjectCollider.bounds);
+            bool _isVisible = GeometryUtility.TestPlanesAABB(CamerafrustumPlanes, _targetGameObjectCollider.bounds);
             return _isVisible;
 
             //This method only fit small gameobject

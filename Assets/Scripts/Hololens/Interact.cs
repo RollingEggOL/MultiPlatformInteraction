@@ -26,7 +26,6 @@ public class Interact : MonoBehaviour
             _selectedGameObject = value;
             
             DirectionIndicator.Instance.TargetGameobject = _selectedGameObject??_Parent;
-            Debug.Log("Target name is" + DirectionIndicator.Instance.TargetGameobject.name);
         }
     }
 
