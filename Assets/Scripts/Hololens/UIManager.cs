@@ -20,6 +20,7 @@ public class UIManager : Singleton<UIManager>
     private Slider slider_Blue;
     private Slider slider_Green;
     private Toggle toggle_Tagalong;
+    private Toggle toggle_Manipultation;
     private Tagalong _tagalong;
 
 
@@ -34,6 +35,7 @@ public class UIManager : Singleton<UIManager>
         slider_Blue = transform.Find("Panel/Blue").GetComponent<Slider>();
         slider_Green = transform.Find("Panel/Green").GetComponent<Slider>();
         toggle_Tagalong = transform.Find("Panel/Tagalong").GetComponent<Toggle>();
+        toggle_Manipultation = transform.Find("Panel/Manipulation").GetComponent<Toggle>();
     }
 
 
@@ -42,7 +44,6 @@ public class UIManager : Singleton<UIManager>
     {
         if (_HandledMaterials == null)
         {
-            Debug.Log("there is no Materials");
             return;
         }
 
@@ -53,7 +54,6 @@ public class UIManager : Singleton<UIManager>
     {
         if (_HandledMaterials == null)
         {
-            Debug.Log("there is no Materials");
             return;
         }
 
@@ -64,7 +64,6 @@ public class UIManager : Singleton<UIManager>
     {
         if (_HandledMaterials == null)
         {
-            Debug.Log("there is no Materials");
             return;
         }
 
@@ -80,6 +79,18 @@ public class UIManager : Singleton<UIManager>
         else
         {
             _tagalong.enabled = false;
+        }
+    }
+
+    public void ToggleValueChangedListener_Manipulation()
+    {
+        if (toggle_Manipultation.isOn)
+        {
+            GestureManager.Instance.SwitchRecognizer(GestureManager.Instance.ManipulationRecognizer);
+        }
+        else
+        {
+            GestureManager.Instance.SwitchRecognizer(GestureManager.Instance.NavigationRecognizer);
         }
     }
 

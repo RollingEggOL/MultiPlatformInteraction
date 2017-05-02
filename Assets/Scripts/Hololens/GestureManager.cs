@@ -33,6 +33,7 @@ public class GestureManager : Singleton<GestureManager>
     }
 
     public bool IsNavigation = false;
+    public bool IsManipulation = false;
     public Vector3 NavigationRelativePosition
     {
         get;
@@ -50,6 +51,13 @@ public class GestureManager : Singleton<GestureManager>
         NavigationRecognizer.NavigationCanceledEvent += NavigationRecognizer_Canceled;
         NavigationRecognizer.TappedEvent += NavigationRecognizer_TappedEvent;
 
+        ManipulationRecognizer = new GestureRecognizer();
+        ManipulationRecognizer.SetRecognizableGestures(GestureSettings.ManipulationTranslate);
+        ManipulationRecognizer.ManipulationStartedEvent += ManipulationRecognzer_Start;
+        ManipulationRecognizer.ManipulationUpdatedEvent += ManipulationRecognzer_Update;
+        ManipulationRecognizer.ManipulationCompletedEvent += ManipulationRecognzer_Completed;
+        ManipulationRecognizer.ManipulationCanceledEvent += ManipulationRecognzer_Canceled;
+
         //the default recognizer is to navigate
         SwitchRecognizer(NavigationRecognizer);
     }
@@ -62,6 +70,11 @@ public class GestureManager : Singleton<GestureManager>
         NavigationRecognizer.NavigationCompletedEvent -= NavigationRecognizer_Completed;
         NavigationRecognizer.NavigationCanceledEvent -= NavigationRecognizer_Canceled;
         NavigationRecognizer.TappedEvent -= NavigationRecognizer_TappedEvent;
+
+        ManipulationRecognizer.ManipulationStartedEvent -= ManipulationRecognzer_Start;
+        ManipulationRecognizer.ManipulationUpdatedEvent -= ManipulationRecognzer_Update;
+        ManipulationRecognizer.ManipulationCompletedEvent -= ManipulationRecognzer_Completed;
+        ManipulationRecognizer.ManipulationCanceledEvent -= ManipulationRecognzer_Canceled;
     }
 
     /// <summary>
@@ -99,7 +112,6 @@ public class GestureManager : Singleton<GestureManager>
             _focusedObject.SendMessage("OnSelect");
         }
     }
-
     private void NavigationRecognizer_Start(InteractionSourceKind source, Vector3 RelativePosition, Ray headRay)
     {
         IsNavigation = true;
@@ -118,4 +130,27 @@ public class GestureManager : Singleton<GestureManager>
     {
         IsNavigation = false;
     }
+
+    private void ManipulationRecognzer_Start(InteractionSourceKind source, Vector3 RelativePosition, Ray headRay)
+    {
+        IsManipulation = true;
+        Interact.SelectedGameObject.SendMessage("PerformManipulationStart", RelativePosition);
+    }
+
+    private void ManipulationRecognzer_Update(InteractionSourceKind source, Vector3 RelativePosition, Ray headRay)
+    {
+        IsManipulation = true;
+        Interact.SelectedGameObject.SendMessage("PerformManipulationUpdate", RelativePosition);
+    }
+
+    private void ManipulationRecognzer_Completed(InteractionSourceKind source, Vector3 RelativePosition, Ray headRay)
+    {
+        IsManipulation = false;
+    }
+
+    private void ManipulationRecognzer_Canceled(InteractionSourceKind source, Vector3 RelativePosition, Ray headRay)
+    {
+        IsManipulation = false;
+    }
+
 }

@@ -7,6 +7,10 @@ public class GestureAction : MonoBehaviour
     [Tooltip("How fast the gameobject will rotate by the value of navigation")]
     public float RotationSensitivity = 3f;
 
+    [Range(0,1)]
+    [Tooltip("How fast the gameobject will move by the value of manipulation")]
+    public float ManipulationSensitivity = 0.05f;
+
     public static bool IsRotating = false;
 
     private void Update()
@@ -14,8 +18,9 @@ public class GestureAction : MonoBehaviour
         PerformRotation();       
     }
 
+    //TODO:Optimize this function,think wheter can remove it from the update function
     private void PerformRotation()
-    {
+   { 
         GameObject _selected = Interact.SelectedGameObject;
 
         //if we did not select anyGameobject then we will rotate the whole Brat
@@ -34,6 +39,23 @@ public class GestureAction : MonoBehaviour
             {
                 IsRotating = false;
             }
+        }
+    }
+
+
+    private Vector3 manipulationPreviousPosition = Vector3.zero;
+
+    private void PerformManipulationStart(Vector3 position)
+    {
+        manipulationPreviousPosition = position;
+    }
+
+    private void PerformManipulationUpdate(Vector3 position)
+    {
+        if (GestureManager.Instance.IsManipulation)
+        {
+            Vector3 deltaVector = position - manipulationPreviousPosition;
+            transform.position += deltaVector*ManipulationSensitivity;
         }
     }
 }
