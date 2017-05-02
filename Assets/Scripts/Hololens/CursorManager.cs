@@ -20,13 +20,16 @@ public class CursorManager : MonoBehaviour {
     public GameObject prefab_ScrollDetectedCursor;
     private GameObject scrollDetectedCursor;
 
+    [Tooltip("The cursor when pathing the gameobject")]
+    public GameObject prefab_PathingDetectedCursor;
+    private GameObject pathDetectedCursor;
 
     [Tooltip("The hand or scroll cursor's parent in case to make them face the user")]
     public GameObject Billboard;
 
 	void Start ()
     {
-        if (CursorOn == null || CursorOff == null || prefab_HandDetectedCursor==null)
+        if (CursorOn == null || CursorOff == null || prefab_HandDetectedCursor==null || prefab_PathingDetectedCursor==null)
         {
             Debug.LogError("THE CURSOR IS NOT SET");
             return;
@@ -34,6 +37,7 @@ public class CursorManager : MonoBehaviour {
 
         handDetectedCursor = InstantiatePrefab(prefab_HandDetectedCursor);
         scrollDetectedCursor = InstantiatePrefab(prefab_ScrollDetectedCursor);
+        pathDetectedCursor = InstantiatePrefab(prefab_PathingDetectedCursor);
 
         //hide the cursor at beginning
         CursorOn.SetActive(false);
@@ -49,6 +53,7 @@ public class CursorManager : MonoBehaviour {
         UpdateGeneralCursorState();
         UpdateHandCursorState();
         UpdateScrollCursorState();
+        UpdatePathCursorState();
     }
 
     private GameObject InstantiatePrefab(GameObject inputPrefab)
@@ -103,6 +108,15 @@ public class CursorManager : MonoBehaviour {
             return;
         }
 
-        scrollDetectedCursor.SetActive(GestureAction.IsRotating|| MultiSlider.IsDragging);
+        scrollDetectedCursor.SetActive(GestureManager.Instance.IsNavigation);
+    }
+
+    private void UpdatePathCursorState()
+    {
+        if (pathDetectedCursor == null)
+        {
+            return;
+        }
+        pathDetectedCursor.SetActive(GestureManager.Instance.IsManipulation);
     }
 }
