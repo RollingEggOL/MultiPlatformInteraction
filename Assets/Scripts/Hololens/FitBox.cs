@@ -28,6 +28,7 @@ public class FitBox : Singleton<FitBox>
         {
             CollectionDefaultPosition = HololensCollection.transform.localPosition;
             HololensCollection.SetActive(false);
+            DirectionIndicator.Instance.enabled = false;
             //To hide the panel
             HololensCollection.GetComponentInChildren<Interact>().InitPanel();
         }
@@ -52,6 +53,8 @@ public class FitBox : Singleton<FitBox>
         if (HololensCollection)
         {
             HololensCollection.SetActive(true);
+            DirectionIndicator.Instance.enabled = true;
+
             if (MoveCollectionOnDismiss)
             {
                 Quaternion camQueat = Camera.main.transform.localRotation;
