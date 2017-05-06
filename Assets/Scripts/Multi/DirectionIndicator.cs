@@ -45,8 +45,15 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
 
         DirectionIndicatorObject = Instantiate(DirectionIndicatorObject);
         DirectionIndicatorObject.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
-        
-        TargetGameobject = GameObject.Find("Brat");
+
+        if (SpeechManager.Instance.IsNetworkScene)
+        {
+            TargetGameobject = GameObject.Find("Brat_Network(Clone)");
+        }
+        else
+        {
+            TargetGameobject = GameObject.Find("Brat");
+        }
         _targetGameObjectCollider = TargetGameobject.GetComponent<Collider>();
 
         cameraTransform = new ComRef<Transform>(() =>

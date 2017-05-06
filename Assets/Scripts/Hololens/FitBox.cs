@@ -10,8 +10,6 @@ using UnityEngine.VR.WSA.Input;
 /// </summary>
 public class FitBox : Singleton<FitBox>
 {
-    [Tooltip("The Gameobject to show after click the fitbox")]
-    public GameObject HololensCollection;
 
     [Tooltip("whether the gameobject's position should relative to where the fixbox was dismiseed")]
     public bool MoveCollectionOnDismiss = true;
@@ -21,17 +19,24 @@ public class FitBox : Singleton<FitBox>
     private float Distance = 2.0f;
 
     private GestureRecognizer recognizer;
+    private GameObject HololensCollection;
 
     private void Start()
     {
-        if (HololensCollection)
+        if (SpeechManager.Instance.IsNetworkScene)
         {
-            CollectionDefaultPosition = HololensCollection.transform.localPosition;
-            HololensCollection.SetActive(false);
-            DirectionIndicator.Instance.enabled = false;
-            //To hide the panel
-            HololensCollection.GetComponentInChildren<Interact>().InitPanel();
+            HololensCollection = GameObject.Find("Brat_Network(Clone)");
         }
+        else
+        {
+            HololensCollection = GameObject.Find("Brat");
+        }
+        CollectionDefaultPosition = HololensCollection.transform.localPosition;
+        HololensCollection.SetActive(false);
+        DirectionIndicator.Instance.enabled = false;
+        //To hide the panel
+        HololensCollection.GetComponentInChildren<Interact>().InitPanel();
+
 #if UNITY_WSA_10_0
         //Set gesture listener
         recognizer = new GestureRecognizer();
@@ -78,10 +83,6 @@ public class FitBox : Singleton<FitBox>
                 Destroy(gameObject);
             }
         }
-    }
-
-    private void Update()
-    {
     }
 
     private void LateUpdate()

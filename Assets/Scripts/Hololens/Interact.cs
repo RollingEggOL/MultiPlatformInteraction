@@ -41,10 +41,19 @@ public class Interact : MonoBehaviour
 
         _Panel = new ComRef<GameObject>(() =>
         {
-            return GameObject.Find("UI/Panel");
+            if (SpeechManager.Instance.IsNetworkScene)
+            {
+                return GameObject.Find("GeneralUI/UI(Clone)/Panel");
+            }
+            else
+            {
+                return GameObject.Find("UI/Panel");
+            }
         });
-
-        _Panel.Ref.SetActive(false);
+        if (_Panel.Ref != null)
+        {
+            _Panel.Ref.SetActive(false);
+        }
     }
 
     private void InitInteractibleObject()
