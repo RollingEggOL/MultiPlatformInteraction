@@ -18,7 +18,7 @@ public class FitBox : Singleton<FitBox>
 
     private Vector3 CollectionDefaultPosition;
 
-    private float Distance = 2.0f;
+    private float Distance = 0.5f;
 
     private GestureRecognizer recognizer;
 
@@ -41,14 +41,22 @@ public class FitBox : Singleton<FitBox>
         });
         recognizer.StartCapturingGestures();
 #endif
+#if UNITY_EDITOR
+		Debug.Log("In editor mode");
+		ViveControllerManager.Instance._leftTriggerEvent+=DismissFitBox;
+#endif
     }
 
     private void DismissFitBox()
     {
-        recognizer.CancelGestures();
+	if (recognizer!=null) 
+	{
+	    recognizer.CancelGestures();
         recognizer.StopCapturingGestures();
         recognizer.Dispose();
         recognizer = null;
+	}
+		ViveControllerManager.Instance._leftTriggerEvent -= DismissFitBox;
 
         if (HololensCollection)
         {
@@ -79,11 +87,7 @@ public class FitBox : Singleton<FitBox>
             }
         }
     }
-
-    private void Update()
-    {
-    }
-
+		
     private void LateUpdate()
     {
         Transform CameraTransform = Camera.main.transform;
