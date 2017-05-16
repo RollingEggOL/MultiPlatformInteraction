@@ -6,6 +6,9 @@ using UnityEngine.Networking;
 public class NetworkInitManager : NetworkBehaviour
 {
     public GameObject prefab_Camera_simu;
+    [HideInInspector]
+    public GameObject Camera_simu;
+
     public override void OnStartLocalPlayer()
     {
         if (NetworkSpawner.HasStartServer)
@@ -38,12 +41,11 @@ public class NetworkInitManager : NetworkBehaviour
             if (!Managers[index].isLocalPlayer)
             {
                 //Destroy(Managers[index].gameObject);
-                Managers[index].gameObject.SetActive(false);
+                Managers[index].gameObject.GetComponent<GestureManager>().enabled=false;
             }
         }
     }
 
-    GameObject Camera_simu;
     public void GenerateSimuCamera()
     {
         if (isLocalPlayer)
@@ -52,14 +54,10 @@ public class NetworkInitManager : NetworkBehaviour
             {
                 return;
             }
+            //Camera.main.gameObject.SetActive(false);
             Camera_simu = Instantiate(prefab_Camera_simu);
         }
     }
-
-    //private void Update()
-    //{
-    //    Debug.Log("is local player" + isLocalPlayer);
-    //}
 
     public void DestroySimuCamera()
     {
