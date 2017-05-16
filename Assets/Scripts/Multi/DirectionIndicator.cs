@@ -31,6 +31,10 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
         }
         set
         {
+            if (value == null)
+            {
+                return;
+            }
             _targetGameobject = value;
             _targetGameObjectCollider = _targetGameobject.GetComponent<Collider>();
         }
@@ -46,6 +50,17 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
         DirectionIndicatorObject = Instantiate(DirectionIndicatorObject);
         DirectionIndicatorObject.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
 
+        InitTargetGameobject();
+
+        cameraTransform = new ComRef<Transform>(() =>
+          {
+              return Camera.main.transform;
+          });
+
+    }
+
+    private void InitTargetGameobject()
+    {
         if (SpeechManager.Instance.IsNetworkScene)
         {
             TargetGameobject = GameObject.Find("Brat_Network(Clone)");
@@ -54,13 +69,6 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
         {
             TargetGameobject = GameObject.Find("Brat");
         }
-        _targetGameObjectCollider = TargetGameobject.GetComponent<Collider>();
-
-        cameraTransform = new ComRef<Transform>(() =>
-          {
-              return Camera.main.transform;
-          });
-
     }
 
 
@@ -74,7 +82,8 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
 
         if (TargetGameobject == null)
         {
-            Debug.LogError("NO_TARGET");
+            Debug.Log("NO_TARGET");
+            InitTargetGameobject();
             return;
         }
         //Direction from the camera to TargetGameObject
@@ -126,5 +135,13 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
 
         position = origin + cursorIndicatorDirection * DistanceFromCursor;
         rotation = Quaternion.LookRotation(cameraTransform.Ref.forward, cursorIndicatorDirection) * directionIndicatorDefaultRotation;
+    }
+
+    private void OnDestroy()
+    {
+        if (DirectionIndicatorObject != null)
+        {
+            Destroy(DirectionIndicatorObject);
+        }
     }
 }

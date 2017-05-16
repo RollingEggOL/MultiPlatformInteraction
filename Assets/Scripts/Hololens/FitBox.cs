@@ -46,14 +46,21 @@ public class FitBox : Singleton<FitBox>
         });
         recognizer.StartCapturingGestures();
 #endif
+
+#if UNITY_EDITOR
+        DismissFitBox();
+#endif
     }
 
     private void DismissFitBox()
     {
-        recognizer.CancelGestures();
-        recognizer.StopCapturingGestures();
-        recognizer.Dispose();
-        recognizer = null;
+        if (recognizer != null)
+        {
+            recognizer.CancelGestures();
+            recognizer.StopCapturingGestures();
+            recognizer.Dispose();
+            recognizer = null;
+        }
 
         if (HololensCollection)
         {

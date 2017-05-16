@@ -23,6 +23,10 @@ public class GestureAction : MonoBehaviour
     private void PerformRotation()
    { 
         GameObject _selected = Interact.SelectedGameObject;
+        if (GestureManager.Instance == null)
+        {
+            return;
+        }
 
         //if we did not select any Gameobject then we will rotate the whole Brat
         //(all component in brat will enter this funciton and be rotated)
