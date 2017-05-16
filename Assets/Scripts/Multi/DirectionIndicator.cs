@@ -8,7 +8,8 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
     public GameObject Cursor;
 
     [Tooltip("Model of the direction indicator")]
-    public GameObject DirectionIndicatorObject;
+    public GameObject DirectionIndicatorObjectPrefab;
+    private GameObject DirectionIndicatorObject;
 
     [Tooltip("The width of allowable space of the screen")]
     [Range(0, 0.3f)]
@@ -42,12 +43,12 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
 
     private void Awake()
     {
-        if (DirectionIndicatorObject == null)
+        if (DirectionIndicatorObjectPrefab == null)
         {
             return;
         }
 
-        DirectionIndicatorObject = Instantiate(DirectionIndicatorObject);
+        DirectionIndicatorObject = Instantiate(DirectionIndicatorObjectPrefab);
         DirectionIndicatorObject.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
 
         InitTargetGameobject();
@@ -57,6 +58,15 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
               return Camera.main.transform;
           });
 
+    }
+
+    private void OnEnable()
+    {
+        if (DirectionIndicatorObjectPrefab != null && DirectionIndicatorObject == null)
+        {
+            DirectionIndicatorObject = Instantiate(DirectionIndicatorObjectPrefab);
+            DirectionIndicatorObject.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        }
     }
 
     private void InitTargetGameobject()
@@ -74,10 +84,14 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
 
     private void Update()
     {
-        if (DirectionIndicatorObject == null || Cursor==null)
+        if (DirectionIndicatorObject == null)
         {
-            Debug.LogError("NO_INDICATOR || NO CURSOR");
+            Debug.LogError("NO_INDICATOR");
             return;
+        }
+        if (Cursor == null)
+        {
+            Debug.Log("No cursor");
         }
 
         if (TargetGameobject == null)
@@ -137,11 +151,13 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
         rotation = Quaternion.LookRotation(cameraTransform.Ref.forward, cursorIndicatorDirection) * directionIndicatorDefaultRotation;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         if (DirectionIndicatorObject != null)
         {
+            Debug.Log("Destory Indicator");
             Destroy(DirectionIndicatorObject);
+            DirectionIndicatorObject = null;
         }
     }
 }

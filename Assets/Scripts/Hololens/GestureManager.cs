@@ -65,7 +65,7 @@ public class GestureManager : Singleton<GestureManager>
     }
 
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         NavigationRecognizer.NavigationStartedEvent -= NavigationRecognizer_Start;
         NavigationRecognizer.NavigationUpdatedEvent -= NavigationRecognizer_Update;

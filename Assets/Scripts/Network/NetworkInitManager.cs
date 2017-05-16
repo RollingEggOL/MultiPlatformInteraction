@@ -8,7 +8,6 @@ public class NetworkInitManager : NetworkBehaviour
     public GameObject prefab_Camera_simu;
     public override void OnStartLocalPlayer()
     {
-        Debug.Log("Local player");
         if (NetworkSpawner.HasStartServer)
         {
             NetworkSpawner.Instance.SpawnPrefab();
@@ -16,29 +15,54 @@ public class NetworkInitManager : NetworkBehaviour
         GenerateSimuCamera();
     }
 
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        StopAllCoroutines();
+        StartCoroutine(DisActiveNonLocalPlayer());
+    }
+
+    /// <summary>
+    ///For OnStartClient is called before OnStartLcoalPlayer
+    ///so the parameter IsLocalPlayer will always return false in OnStartClient
+    ///so we make a coroutine to detected the IsLocalPlayer in next frame
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator DisActiveNonLocalPlayer()
+    {
+        yield return null;
+        NetworkInitManager[] Managers = FindObjectsOfType<NetworkInitManager>();
+        for (int index = 0; index != Managers.Length; ++index)
+        {
+            if (!Managers[index].isLocalPlayer)
+            {
+                //Destroy(Managers[index].gameObject);
+                Managers[index].gameObject.SetActive(false);
+            }
+        }
+    }
+
     GameObject Camera_simu;
     public void GenerateSimuCamera()
     {
-        Debug.Log("Enter ClientRPC");
         if (isLocalPlayer)
         {
-            Debug.Log("Enter instantiate");
             if (isServer)
             {
                 return;
             }
             Camera_simu = Instantiate(prefab_Camera_simu);
-            if (Camera_simu == null)
-            {
-                Debug.Log("Instantiate fail");
-            }
         }
-        Debug.Log("Exit instantiate");
     }
+
+    //private void Update()
+    //{
+    //    Debug.Log("is local player" + isLocalPlayer);
+    //}
 
     public void DestroySimuCamera()
     {
-        Debug.Log("Enter destroy camera");
         if (Camera_simu != null)
         {
             Destroy(Camera_simu);
