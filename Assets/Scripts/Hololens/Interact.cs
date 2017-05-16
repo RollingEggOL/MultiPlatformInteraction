@@ -29,8 +29,7 @@ public class Interact : MonoBehaviour
         }
     }
 
-    private Vector3 originPositionOfSelectedObj;
-    private Quaternion originRotationOfSelectedObj;
+
 
     public void InitPanel()
     {
@@ -119,8 +118,14 @@ public class Interact : MonoBehaviour
         UIManager.Instance._HandledMaterials = defaultMaterials;
         UIManager.Instance.InitSliderValue();
 
-        bool _cancelSelected = SelectedGameObject == gameObject;      
-        SwitchGameobject(_cancelSelected);
+        bool _cancelSelected = SelectedGameObject == gameObject;
+
+        var ClientBroadcasts = FindObjectsOfType<ClientBroadcast>();
+        foreach (var client in ClientBroadcasts)
+        {
+            client.RpcSwitchFocusGameobject(name,_cancelSelected);
+        }
+
         if (_cancelSelected)
         {
             CancelProcess();
@@ -131,37 +136,38 @@ public class Interact : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// if the currenyly select gameobject has been selected,then cancel the select mode
-    /// which the select object will be closer to player,and others gameobjects will be hided
-    /// </summary>
-    void SwitchGameobject(bool cancel)
-    {
-        for (int index = 0; index != InteractibleObject.Length; ++index)
-        {
-            Interact temp = InteractibleObject[index];
-            if (temp != this)
-            {
-                temp.gameObject.SetActive(cancel);
-            }
-            else
-            {
-                if (!cancel)
-                {
-                    Vector3 direction = Camera.main.transform.forward;
-                    originPositionOfSelectedObj = temp.transform.position;
-                    originRotationOfSelectedObj = temp.transform.rotation;
-                    temp.transform.position -= direction;
-                }
-                else
-                {
-                    temp.transform.position = originPositionOfSelectedObj;
-                    temp.transform.rotation = originRotationOfSelectedObj;
-                }
 
-            }
-        }
-    }
+    ///// <summary>
+    ///// if the currenyly select gameobject has been selected,then cancel the select mode
+    ///// which the select object will be closer to player,and others gameobjects will be hided
+    ///// </summary>
+    //void SwitchGameobject(bool cancel)
+    //{
+    //    for (int index = 0; index != InteractibleObject.Length; ++index)
+    //    {
+    //        Interact temp = InteractibleObject[index];
+    //        if (temp != this)
+    //        {
+    //            temp.gameObject.SetActive(cancel);
+    //        }
+    //        else
+    //        {
+    //            if (!cancel)
+    //            {
+    //                Vector3 direction = Camera.main.transform.forward;
+    //                originPositionOfSelectedObj = temp.transform.position;
+    //                originRotationOfSelectedObj = temp.transform.rotation;
+    //                temp.transform.position -= direction;
+    //            }
+    //            else
+    //            {
+    //                temp.transform.position = originPositionOfSelectedObj;
+    //                temp.transform.rotation = originRotationOfSelectedObj;
+    //            }
+
+    //        }
+    //    }
+    //}
 
     private void SelectProcess()
     {

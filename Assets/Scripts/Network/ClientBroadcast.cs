@@ -22,10 +22,15 @@ public class ClientBroadcast : NetworkBehaviour
         {
             return;
         }
-        RpcUpdateCameraSimu(CameraTransform.Ref.position, CameraTransform.Ref.rotation);
+        if (isServer)
+        {
+            RpcUpdateCameraSimu(CameraTransform.Ref.position, CameraTransform.Ref.rotation);
+        }
     }
 
+    [HideInInspector]
     public GameObject Camera_simu = null;
+    private GameObject[] InteractObjs;
 
     [ClientRpc]
     void RpcUpdateCameraSimu(Vector3 Position,Quaternion Rotation)
@@ -43,6 +48,55 @@ public class ClientBroadcast : NetworkBehaviour
         {
             Camera_simu.transform.position = Position;
             Camera_simu.transform.rotation = Rotation;
+        }
+    }
+
+    private Vector3 originPositionOfSelectedObj;
+    private Quaternion originRotationOfSelectedObj;
+
+    [ClientRpc]
+    public void RpcSwitchFocusGameobject(string SelectedObjName,bool cancel)
+    {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+        if (InteractObjs == null)
+        {
+            var Interacts = FindObjectsOfType<Interact>();
+            InteractObjs = new GameObject[Interacts.Length];
+            for (int index = 0; index != Interacts.Length; ++index)
+            {
+                InteractObjs[index] = Interacts[index].gameObject;
+            }
+            if (InteractObjs == null)
+            {
+                Debug.Log("can get any interobjs");
+                return;
+            }
+        }
+        for (int index = 0; index != InteractObjs.Length; ++index)
+        {
+            GameObject temp = InteractObjs[index];
+            if (temp.name != SelectedObjName)
+            {
+                temp.SetActive(cancel);
+            }
+            else
+            {
+                if (!cancel)
+                {
+                    Vector3 direction = Camera.main.transform.forward;
+                    originPositionOfSelectedObj = temp.transform.position;
+                    originRotationOfSelectedObj = temp.transform.rotation;
+                    temp.transform.position -= direction;
+                }
+                else
+                {
+                    temp.transform.position = originPositionOfSelectedObj;
+                    temp.transform.rotation = originRotationOfSelectedObj;
+                }
+            }
         }
     }
 }
