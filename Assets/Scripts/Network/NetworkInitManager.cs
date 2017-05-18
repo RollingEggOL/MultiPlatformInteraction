@@ -41,6 +41,7 @@ public class NetworkInitManager : NetworkBehaviour
             if (!Managers[index].isLocalPlayer)
             {
                 Managers[index].gameObject.GetComponent<GestureManager>().enabled=false;
+                Managers[index].gameObject.GetComponent<DirectionIndicator>().enabled = false;
             }
         }
     }

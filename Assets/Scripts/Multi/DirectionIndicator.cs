@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class DirectionIndicator : Singleton<DirectionIndicator>
 {
-    [Tooltip("The cursor which the Indicator should follow")]
-    public GameObject Cursor;
+    //[Tooltip("The cursor which the Indicator should follow")]
+    private GameObject Cursor=null;
 
     [Tooltip("Model of the direction indicator")]
     public GameObject DirectionIndicatorObjectPrefab;
@@ -92,6 +92,8 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
         if (Cursor == null)
         {
             Debug.Log("No cursor");
+            Cursor = GameObject.Find("GeneralUI/UI(Clone)/Cursor");
+            return;
         }
 
         if (TargetGameobject == null)
