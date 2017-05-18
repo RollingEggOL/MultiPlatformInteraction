@@ -114,16 +114,16 @@ public class Interact : MonoBehaviour
 
     void OnSelect()
     {
-        //Update the materials which need to be handled,and set the slider according to the materials
-        UIManager.Instance._HandledMaterials = defaultMaterials;
-        UIManager.Instance.InitSliderValue();
 
         bool _cancelSelected = SelectedGameObject == gameObject;
 
         var ClientBroadcasts = FindObjectsOfType<ClientBroadcast>();
         foreach (var client in ClientBroadcasts)
         {
-            client.RpcSwitchFocusGameobject(name,_cancelSelected);
+            if (client.isServer)
+            {
+                client.RpcSwitchFocusGameobject(name, _cancelSelected);
+            }
         }
 
         if (_cancelSelected)
@@ -135,39 +135,6 @@ public class Interact : MonoBehaviour
             SelectProcess();
         }
     }
-
-
-    ///// <summary>
-    ///// if the currenyly select gameobject has been selected,then cancel the select mode
-    ///// which the select object will be closer to player,and others gameobjects will be hided
-    ///// </summary>
-    //void SwitchGameobject(bool cancel)
-    //{
-    //    for (int index = 0; index != InteractibleObject.Length; ++index)
-    //    {
-    //        Interact temp = InteractibleObject[index];
-    //        if (temp != this)
-    //        {
-    //            temp.gameObject.SetActive(cancel);
-    //        }
-    //        else
-    //        {
-    //            if (!cancel)
-    //            {
-    //                Vector3 direction = Camera.main.transform.forward;
-    //                originPositionOfSelectedObj = temp.transform.position;
-    //                originRotationOfSelectedObj = temp.transform.rotation;
-    //                temp.transform.position -= direction;
-    //            }
-    //            else
-    //            {
-    //                temp.transform.position = originPositionOfSelectedObj;
-    //                temp.transform.rotation = originRotationOfSelectedObj;
-    //            }
-
-    //        }
-    //    }
-    //}
 
     private void SelectProcess()
     {

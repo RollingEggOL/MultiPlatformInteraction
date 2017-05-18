@@ -6,7 +6,9 @@ using UnityEngine.Networking;
 public class ClientBroadcast : NetworkBehaviour
 {
 
-    ComRef<Transform> CameraTransform;
+    private ComRef<Transform> CameraTransform;
+    private Vector3 originPositionOfSelectedObj;
+    private Quaternion originRotationOfSelectedObj;
 
     private void Start()
     {
@@ -51,9 +53,6 @@ public class ClientBroadcast : NetworkBehaviour
         }
     }
 
-    private Vector3 originPositionOfSelectedObj;
-    private Quaternion originRotationOfSelectedObj;
-
     [ClientRpc]
     public void RpcSwitchFocusGameobject(string SelectedObjName,bool cancel)
     {
@@ -69,11 +68,6 @@ public class ClientBroadcast : NetworkBehaviour
             {
                 InteractObjs[index] = Interacts[index].gameObject;
             }
-            if (InteractObjs == null)
-            {
-                Debug.Log("can get any interobjs");
-                return;
-            }
         }
         for (int index = 0; index != InteractObjs.Length; ++index)
         {
@@ -84,6 +78,8 @@ public class ClientBroadcast : NetworkBehaviour
             }
             else
             {
+                UIManager.Instance._HandledMaterials = temp.GetComponent<Interact>().defaultMaterials;
+                UIManager.Instance.InitSliderValue();
                 if (!cancel)
                 {
                     Vector3 direction = Camera.main.transform.forward;
@@ -97,6 +93,24 @@ public class ClientBroadcast : NetworkBehaviour
                     temp.transform.rotation = originRotationOfSelectedObj;
                 }
             }
+        }
+    }
+
+    [ClientRpc]
+    public void RpcSetColor(string _sliderType,float value)
+    {
+        Material[] materials = UIManager.Instance._HandledMaterials;
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+        if (materials == null || materials.Length == 0)
+        {
+            Debug.Log("No materials");
+        }
+        for (int index = 0; index != materials.Length; ++index)
+        {
+            materials[index].SetFloat(_sliderType, value);
         }
     }
 }

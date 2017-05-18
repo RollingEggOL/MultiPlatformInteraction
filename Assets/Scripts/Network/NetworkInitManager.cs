@@ -40,7 +40,6 @@ public class NetworkInitManager : NetworkBehaviour
         {
             if (!Managers[index].isLocalPlayer)
             {
-                //Destroy(Managers[index].gameObject);
                 Managers[index].gameObject.GetComponent<GestureManager>().enabled=false;
             }
         }

@@ -114,9 +114,14 @@ public class UIManager : Singleton<UIManager>
                 value = slider_Blue.value;
                 break;
         }
-        for (int index = 0; index != _HandledMaterials.Length; ++index)
+
+        ClientBroadcast[] clients = FindObjectsOfType<ClientBroadcast>();
+        foreach (var client in clients)
         {
-            _HandledMaterials[index].SetFloat(_sliderType, value);
+            if (client.isServer)
+            {
+                client.RpcSetColor(_sliderType, value);
+            }
         }
     }
 
