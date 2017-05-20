@@ -141,6 +141,10 @@ public class SteamVR_Controller
 
 	public static Device Input(int deviceIndex)
 	{
+		if (deviceIndex == -1)
+		{
+			return null;
+		}
 		if (devices == null)
 		{
 			devices = new Device[OpenVR.k_unMaxTrackedDeviceCount];
