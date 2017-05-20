@@ -22,26 +22,31 @@ public class ViveControllerManager :Singleton<ViveControllerManager>
 	// Use this for initialization
 	void Start () 
 	{
+
+		UpdateControllerState ();
+		SteamVR_ControllerManager.Instance._OnDevicesStateChanged += UpdateControllerState;
+	}
+
+	private void UpdateControllerState()
+	{
 		_leftController = CameraRig.Find ("Controller (left)").GetComponent<SteamVR_TrackedObject> ();
 		_rightController = CameraRig.Find ("Controller (right)").GetComponent<SteamVR_TrackedObject> ();
 
-		_leftDevices = new ComRef<SteamVR_Controller.Device> (() =>
-			{
-				return SteamVR_Controller.Input ((int)_leftController.index);
-			});
+		_leftDevices = new ComRef<SteamVR_Controller.Device> (() => {
+			return SteamVR_Controller.Input ((int)_leftController.index);
+		});
 
-		_rightDevices = new ComRef<SteamVR_Controller.Device> (() =>
-			{
-				return SteamVR_Controller.Input ((int)_rightController.index);
-			});
+		_rightDevices = new ComRef<SteamVR_Controller.Device> (() => {
+			return SteamVR_Controller.Input ((int)_rightController.index);
+		});
 	}
-	
+
 	// Update is called once per frame
 	void Update ()
 	{
 		activeControllerDevice = null;
 		ActiveController = null;
-		if (_leftDevices.Ref == null && _rightDevices.Ref == null)
+		if (_leftDevices.Ref == null || _rightDevices.Ref == null)
 		{
 			return;
 		}

@@ -12,6 +12,7 @@ public class ViveInputModule : BaseInputModule
 
 	private SteamVR_TrackedObject[] controllers;
 	private SteamVR_Controller.Device[] controllerDevices;
+	private SteamVR_ControllerManager ControllerManager;
 
 	private PointerEventData[] PointEvents;
 
@@ -26,11 +27,12 @@ public class ViveInputModule : BaseInputModule
 		eventCamera.clearFlags = CameraClearFlags.Nothing;
 		eventCamera.cullingMask = 0;
 
-		SteamVR_ControllerManager ControllerManager=FindObjectOfType<SteamVR_ControllerManager>();
-		controllers = new SteamVR_TrackedObject[2] {
-			ControllerManager.left.GetComponent<SteamVR_TrackedObject> (),
-			ControllerManager.right.GetComponent<SteamVR_TrackedObject> ()
-		};
+		ControllerManager=FindObjectOfType<SteamVR_ControllerManager>();
+		controllers = new SteamVR_TrackedObject[2];
+		UpdateControllersState ();
+		ControllerManager._OnDevicesStateChanged+=UpdateControllersState;
+
+
 		controllerDevices = new SteamVR_Controller.Device[2];
 
 		PointEvents = new PointerEventData[2];
@@ -40,15 +42,22 @@ public class ViveInputModule : BaseInputModule
 
 
 		Canvas[] canvases = FindObjectsOfType<Canvas> ();
-		foreach (Canvas canvas in canvases) 
-		{
-			canvas.worldCamera = eventCamera;
-		}
+		Debug.Log ("canvas count is" + canvases.Length);
+		//foreach (Canvas canvas in canvases) 
+		//{
+			//canvas.worldCamera = eventCamera;
+		//}
+		GameObject.Find ("UI").transform.Find ("Panel").GetComponent<Canvas> ().worldCamera = eventCamera;
+	}
+
+	private void UpdateControllersState()
+	{
+		controllers[0] =ControllerManager.left.GetComponent<SteamVR_TrackedObject> ();
+		controllers[1]=ControllerManager.right.GetComponent<SteamVR_TrackedObject> ();
 	}
 
 	public override void Process()
 	{
-		Debug.Log ("Process");
 		InitControllers ();
 		GUIHit = false;
 
@@ -161,14 +170,8 @@ public class ViveInputModule : BaseInputModule
 	{
 		GameObject _selectedGameobject = eventSystem.currentSelectedGameObject;//this is auto set by unity
 		if (_selectedGameobject == null) {
-			Debug.Log ("There is No selected GameObject");
 			return false;
 		}
-		else
-		{
-			Debug.Log ("Selected Gameobject is " + _selectedGameobject.name);
-		}
-
 		BaseEventData data = GetBaseEventData ();
 		ExecuteEvents.Execute (_selectedGameobject, data, ExecuteEvents.updateSelectedHandler);
 
@@ -192,8 +195,10 @@ public class ViveInputModule : BaseInputModule
 		}
 
 		PointEvents [eventIndex].delta = Vector2.zero;
-		PointEvents [eventIndex].position = new Vector2 (Screen.width / 2, Screen.height / 2);
-		eventSystem.RaycastAll (PointEvents [eventIndex], m_RaycastResultCache);
+		PointEvents [eventIndex].position = new Vector2 (Screen.width/ 2, Screen.height/ 2);
+		Debug.Log ("screen" + Screen.width + " " + Screen.height);
+		Debug.Log ("evetn camera" + eventCamera.pixelWidth + "" + eventCamera.pixelHeight);
+		eventSystem.RaycastAll (PointEvents[eventIndex], m_RaycastResultCache);
 		PointEvents [eventIndex].pointerCurrentRaycast = FindFirstRaycast (m_RaycastResultCache);
 		if (PointEvents [eventIndex].pointerCurrentRaycast.gameObject != null) {
 			Debug.Log ("Hit something " + PointEvents [eventIndex].pointerCurrentRaycast.gameObject.name);

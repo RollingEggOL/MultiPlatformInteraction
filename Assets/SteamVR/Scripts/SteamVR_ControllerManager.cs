@@ -10,6 +10,20 @@ using Valve.VR;
 
 public class SteamVR_ControllerManager : MonoBehaviour
 {
+	private static SteamVR_ControllerManager _instance;
+	public static SteamVR_ControllerManager Instance
+	{
+		get
+		{
+			if (_instance == null)
+			{
+				_instance = FindObjectOfType<SteamVR_ControllerManager> ();
+			}
+			return _instance;
+		}
+	}
+
+
 	public GameObject left, right;
 	public GameObject[] objects; // populate with objects you want to assign to additional controllers
 
@@ -192,8 +206,17 @@ public class SteamVR_ControllerManager : MonoBehaviour
 		}
 
 		if (changed)
+		{
+			if (_OnDevicesStateChanged != null)
+			{
+				_OnDevicesStateChanged ();
+			}
 			Refresh();
+		}
 	}
+
+	public delegate void OnDeviceStateChanged ();
+	public event OnDeviceStateChanged _OnDevicesStateChanged;
 
 	public void Refresh()
 	{
