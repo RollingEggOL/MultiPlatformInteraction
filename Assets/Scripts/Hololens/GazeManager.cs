@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class GazeManager : Singleton<GazeManager>
 {
+	private enum ViveDevice
+	{
+		head,
+		leftController,
+		rightController,
+	}
+
     [Tooltip("The max gaze distance for calculationg a hit")]
     public float MaxGazeDistance = 5.0f;
 
@@ -45,12 +52,30 @@ public class GazeManager : Singleton<GazeManager>
 
     private Vector3 gazeOrigin;
     private Vector3 gazeDirection;
+	private GameObject[] ViveDevices;
+
+	private void Start()
+	{
+		#if UNITY_EDITOR
+		ViveDevices=new GameObject[3];
+		ViveDevices[(int)ViveDevice.head]=Camera.main.gameObject;
+		ViveDevices[(int)ViveDevice.leftController]=GameObject.Find("[CameraRig]").transform.Find("Controller (left)").gameObject;
+		ViveDevices[(int)ViveDevice.rightController]=GameObject.Find("[CameraRig]").transform.Find("Controller (right)").gameObject;
+		#endif
+	}
 
     private void Update()
     {
-        gazeOrigin = Camera.main.transform.position;
-        gazeDirection = Camera.main.transform.forward;
-
+		gazeOrigin = Camera.main.transform.position;
+		gazeDirection = Camera.main.transform.forward;
+		#if UNITY_EDITOR_WIN
+		GameObject activeControllers=ViveControllerManager.Instance.ActiveController;
+		if(activeControllers!=null)
+		{
+			gazeOrigin=activeControllers.transform.position;
+			gazeDirection=activeControllers.transform.forward;
+		}
+		#endif
         //there is no stable
 
         UpdateRaycast();
