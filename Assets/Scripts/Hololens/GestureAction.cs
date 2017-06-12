@@ -14,9 +14,12 @@ public class GestureAction : MonoBehaviour
     //when handling the gui or we detected that we are navigating in gestureManager,this flag should be true
     public static bool IsNavigating = false;
 
+    public static bool IsManipulation = false;
+
     private void Update()
     {
-        PerformRotation();       
+        PerformRotation();
+        PerformMove();
     }
 
     //TODO:Optimize this function,think wheter can remove it from the update function
@@ -47,20 +50,48 @@ public class GestureAction : MonoBehaviour
         }
     }
 
-
-    private Vector3 manipulationPreviousPosition = Vector3.zero;
-
-    private void PerformManipulationStart(Vector3 position)
+    private void PerformMove()
     {
-        manipulationPreviousPosition = position;
-    }
-
-    private void PerformManipulationUpdate(Vector3 position)
-    {
-        if (GestureManager.Instance.IsManipulation)
+        GameObject _selected = Interact.SelectedGameObject;
+        if (GestureManager.Instance == null)
         {
-            Vector3 deltaVector = position - manipulationPreviousPosition;
-            transform.position += deltaVector*ManipulationSensitivity;
+            return;
+        }
+
+        //if we did not select any Gameobject then we will rotate the whole Brat
+        //(all component in brat will enter this funciton and be rotated)
+        //else we only rotate the select component
+        //if we are draging slider,the gameobject should not be rotated
+        if (_selected == null || _selected == InteractManager.Instance.FocusGameObject)
+        {
+            if (GestureManager.Instance.IsManipulation && !MultiSlider.IsDragging)
+            {
+
+                Vector3 deltaVector = GestureManager.Instance.ManipulationRelativePosition - GestureManager.Instance.ManipulationStartPosition;
+                transform.position += deltaVector * ManipulationSensitivity;
+                IsManipulation = true;
+            }
+            else
+            {
+                IsManipulation = false;
+            }
         }
     }
+
+
+    //private Vector3 manipulationPreviousPosition = Vector3.zero;
+
+    //private void PerformManipulationStart(Vector3 position)
+    //{
+    //    manipulationPreviousPosition = position;
+    //}
+
+    //private void PerformManipulationUpdate(Vector3 position)
+    //{
+    //    if (GestureManager.Instance.IsManipulation)
+    //    {
+    //        Vector3 deltaVector = position - manipulationPreviousPosition;
+    //        transform.position += deltaVector*ManipulationSensitivity;
+    //    }
+    //}
 }

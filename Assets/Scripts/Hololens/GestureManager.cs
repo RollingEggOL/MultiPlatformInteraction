@@ -40,6 +40,18 @@ public class GestureManager : Singleton<GestureManager>
         private set;
     }
 
+    public Vector3 ManipulationRelativePosition
+    {
+        get;
+        private set;
+    }
+
+    public Vector3 ManipulationStartPosition
+    {
+        get;
+        private set;
+    }
+
 
     private void OnEnable()
     {
@@ -138,13 +150,13 @@ public class GestureManager : Singleton<GestureManager>
     private void ManipulationRecognzer_Start(InteractionSourceKind source, Vector3 RelativePosition, Ray headRay)
     {
         IsManipulation = true;
-        Interact.SelectedGameObject.SendMessage("PerformManipulationStart", RelativePosition);
+        ManipulationStartPosition = RelativePosition;
     }
 
     private void ManipulationRecognzer_Update(InteractionSourceKind source, Vector3 RelativePosition, Ray headRay)
     {
         IsManipulation = true;
-        Interact.SelectedGameObject.SendMessage("PerformManipulationUpdate", RelativePosition);
+        ManipulationRelativePosition = RelativePosition;
     }
 
     private void ManipulationRecognzer_Completed(InteractionSourceKind source, Vector3 RelativePosition, Ray headRay)

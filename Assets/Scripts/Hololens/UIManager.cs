@@ -94,6 +94,12 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
+    public void SetManipulationToggleValue(bool on)
+    {
+        toggle_Manipultation.isOn = on;
+        ToggleValueChangedListener_Manipulation();
+    }
+
 
     /// <summary>
     /// Set the Materials's rgb value

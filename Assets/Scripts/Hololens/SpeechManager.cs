@@ -51,6 +51,22 @@ public class SpeechManager : Singleton<SpeechManager>
              }
          }));
 
+        keywordCollection.Add("Move", ((PhraseRecognizedEventArgs args) =>
+         {
+             if (networkManager.isNetworkActive)
+             {
+                 UIManager.Instance.SetManipulationToggleValue(true);
+             }
+         }));
+
+        keywordCollection.Add("Rotate", ((PhraseRecognizedEventArgs args) =>
+        {
+            if (networkManager.isNetworkActive)
+            {
+                UIManager.Instance.SetManipulationToggleValue(false);
+            }
+        }));
+
         keywordRecognizer = new KeywordRecognizer(keywordCollection.Keys.ToArray());
         keywordRecognizer.OnPhraseRecognized += KeywordRecognizer_OnPhraseRecognizer;
         keywordRecognizer.Start();
