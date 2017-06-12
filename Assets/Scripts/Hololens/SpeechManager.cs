@@ -14,6 +14,8 @@ public class SpeechManager : Singleton<SpeechManager>
 
     private MultiNetworkManager networkManager;
 
+    public GameObject fitboxPrefab;
+
     public bool IsNetworkScene
     {
         get
@@ -40,6 +42,14 @@ public class SpeechManager : Singleton<SpeechManager>
                 networkManager.StopHost();
             }));
         }
+
+        keywordCollection.Add("hi fitbox", ((PhraseRecognizedEventArgs args) =>
+         {
+             if (networkManager.isNetworkActive)
+             {
+                 Instantiate(fitboxPrefab);
+             }
+         }));
 
         keywordRecognizer = new KeywordRecognizer(keywordCollection.Keys.ToArray());
         keywordRecognizer.OnPhraseRecognized += KeywordRecognizer_OnPhraseRecognizer;

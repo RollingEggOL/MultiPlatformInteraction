@@ -31,7 +31,7 @@ public class FitBox : Singleton<FitBox>
         {
             HololensCollection = GameObject.Find("Brat");
         }
-        CollectionDefaultPosition = HololensCollection.transform.localPosition;
+        CollectionDefaultPosition = HololensCollection.transform.position;
         HololensCollection.SetActive(false);
         DirectionIndicator.Instance.enabled = false;
         //To hide the panel
@@ -69,24 +69,12 @@ public class FitBox : Singleton<FitBox>
 
             if (MoveCollectionOnDismiss)
             {
-                Quaternion camQueat = Camera.main.transform.localRotation;
+                Transform cameraTransform = Camera.main.transform;
 
-                //to ignore the picth,we should set the rotation around x axis to zero;
-                camQueat.x = 0;
+                float Distacne = Vector3.Distance(cameraTransform.position, CollectionDefaultPosition);
 
-                //we do not want the collection be too high 
-                Vector3 newPosition = camQueat * CollectionDefaultPosition;
-                newPosition.y = CollectionDefaultPosition.y;
-
-                HololensCollection.transform.position = Camera.main.transform.position + newPosition;
-                
-                //make the collection face the user
-                Quaternion toQuat = Camera.main.transform.localRotation * HololensCollection.transform.rotation;
-                toQuat.x = 0;
-                toQuat.z = 0;
-                HololensCollection.transform.rotation = toQuat;
-
-                //Destroty the Fitbox
+                HololensCollection.transform.position = cameraTransform.position + cameraTransform.forward* Distacne;             
+                HololensCollection.transform.rotation = Quaternion.LookRotation(cameraTransform.forward);
                 Destroy(gameObject);
             }
         }
@@ -95,9 +83,8 @@ public class FitBox : Singleton<FitBox>
     private void LateUpdate()
     {
         Transform CameraTransform = Camera.main.transform;
-        Transform FitBoxTranform=gameObject.transform;
-        FitBoxTranform.position = CameraTransform.position + (CameraTransform.forward * Distance);
-        FitBoxTranform.rotation = Quaternion.LookRotation(-CameraTransform.forward, -CameraTransform.up);
+        transform.position = CameraTransform.position + (CameraTransform.forward * Distance);
+        transform.rotation = Quaternion.LookRotation(-CameraTransform.forward, -CameraTransform.up);
 
     }
 }
