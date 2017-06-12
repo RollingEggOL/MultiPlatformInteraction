@@ -103,7 +103,7 @@ public class DirectionIndicator : Singleton<DirectionIndicator>
             return;
         }
         //Direction from the camera to TargetGameObject
-        Vector3 camToTargetDirection = TargetGameobject.transform.position - cameraTransform.Ref.position;
+        Vector3 camToTargetDirection = _targetGameObjectCollider.bounds.center - cameraTransform.Ref.position;
         camToTargetDirection.Normalize();
 
         DirectionIndicatorObject.SetActive(!IsTargetVisible);
