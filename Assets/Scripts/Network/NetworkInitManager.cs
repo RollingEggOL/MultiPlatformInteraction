@@ -55,7 +55,10 @@ public class NetworkInitManager : NetworkBehaviour
                 return;
             }
             //Camera.main.gameObject.SetActive(false);
-            Camera_simu = Instantiate(prefab_Camera_simu);
+            if (Camera_simu == null)
+            {
+                Camera_simu = Instantiate(prefab_Camera_simu);
+            }
         }
     }
 

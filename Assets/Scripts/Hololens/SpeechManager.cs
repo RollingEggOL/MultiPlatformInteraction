@@ -67,6 +67,31 @@ public class SpeechManager : Singleton<SpeechManager>
             }
         }));
 
+        keywordCollection.Add("Camera Follow", (PhraseRecognizedEventArgs args) =>
+         {
+             var ClientBroadcasts = FindObjectsOfType<ClientBroadcast>();
+             foreach (var client in ClientBroadcasts)
+             {
+                 if (client.isServer)
+                 {
+                     client.RpcSwitchCamera(true);
+                 }
+             }
+         });
+
+        keywordCollection.Add("Camera Free", (PhraseRecognizedEventArgs args) =>
+        {
+            var ClientBroadcasts = FindObjectsOfType<ClientBroadcast>();
+            foreach (var client in ClientBroadcasts)
+            {
+                if (client.isServer)
+                {
+                    client.RpcSwitchCamera(false);
+                }
+            }
+        });
+
+
         keywordRecognizer = new KeywordRecognizer(keywordCollection.Keys.ToArray());
         keywordRecognizer.OnPhraseRecognized += KeywordRecognizer_OnPhraseRecognizer;
         keywordRecognizer.Start();

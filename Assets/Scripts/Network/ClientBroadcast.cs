@@ -53,6 +53,53 @@ public class ClientBroadcast : NetworkBehaviour
         }
     }
 
+
+    private Camera SimuCameraComponent;
+
+    [ClientRpc]
+    public void RpcSwitchCamera(bool follow)
+    {
+        if (!isLocalPlayer || isServer)
+        {
+            return;
+        }
+        if (Camera_simu == null)
+        {
+            Camera_simu = transform.GetComponent<NetworkInitManager>().Camera_simu;
+            return;
+        }
+        if (Camera_simu != null)
+        {
+            Debug.Log("Enter switch camera");
+            if (follow)
+            {
+                if (SimuCameraComponent == null)
+                {
+                    SimuCameraComponent=Camera_simu.AddComponent<Camera>();
+                    SimuCameraComponent.depth = 2;
+                }
+                else
+                {
+                    SimuCameraComponent.enabled = true;
+                }
+            }
+            else
+            {
+                if (SimuCameraComponent == null)
+                {
+                    SimuCameraComponent = Camera_simu.AddComponent<Camera>();
+                    SimuCameraComponent.enabled = false;
+                }
+                else
+                {
+                    SimuCameraComponent.enabled = false;
+                }
+
+            }
+        }
+    }
+
+
     [ClientRpc]
     public void RpcSwitchFocusGameobject(string SelectedObjName,bool cancel)
     {
