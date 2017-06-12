@@ -35,8 +35,8 @@ public class GestureAction : MonoBehaviour
         //(all component in brat will enter this funciton and be rotated)
         //else we only rotate the select component
         //if we are draging slider,the gameobject should not be rotated
-        if (_selected == null || _selected == InteractManager.Instance.FocusGameObject)
-        {
+        //if (_selected == null || _selected == InteractManager.Instance.FocusGameObject)
+        //{
             if (GestureManager.Instance.IsNavigation && !MultiSlider.IsDragging)
             {
                 float rotationFactor = GestureManager.Instance.NavigationRelativePosition.x * RotationSensitivity;
@@ -47,7 +47,7 @@ public class GestureAction : MonoBehaviour
             {
                 IsNavigating = false;
             }
-        }
+        //}
     }
 
     private void PerformMove()
@@ -62,8 +62,8 @@ public class GestureAction : MonoBehaviour
         //(all component in brat will enter this funciton and be rotated)
         //else we only rotate the select component
         //if we are draging slider,the gameobject should not be rotated
-        if (_selected == null || _selected == InteractManager.Instance.FocusGameObject)
-        {
+        //if (_selected == null || _selected == InteractManager.Instance.FocusGameObject)
+        //{
             if (GestureManager.Instance.IsManipulation && !MultiSlider.IsDragging)
             {
 
@@ -75,7 +75,7 @@ public class GestureAction : MonoBehaviour
             {
                 IsManipulation = false;
             }
-        }
+        //}
     }
 
 
