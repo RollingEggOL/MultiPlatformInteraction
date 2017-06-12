@@ -33,11 +33,6 @@ public class Interact : MonoBehaviour
 
     public void InitPanel()
     {
-        if (_Panel != null)
-        {
-            return;
-        }
-
         _Panel = new ComRef<GameObject>(() =>
         {
             if (SpeechManager.Instance.IsNetworkScene)
